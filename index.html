@@ -339,39 +339,58 @@
         
         .swimmer-selector {
             margin-bottom: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+        
+        /* Styles pour l'impression d'un seul nageur */
+        .single-swimmer-print .swimmer-column {
+            display: none !important;
+        }
+        
+        .single-swimmer-print .swimmer-column.selected {
+            display: table-cell !important;
+        }
+        
+        .single-swimmer-print .task-cell,
+        .single-swimmer-print .validation-cell,
+        .single-swimmer-print .time-input,
+        .single-swimmer-print .observation-input {
+            display: table-cell !important;
         }
         
         @media print {
             .no-print {
-                display: none;
+                display: none !important;
             }
             
             body {
                 background-color: white;
+                font-size: 12px;
             }
             
             .table-container {
                 box-shadow: none;
+                width: 100%;
             }
             
-            /* Masquer toutes les colonnes sauf la première et celle du nageur sélectionné */
-            .swimmer-column {
-                display: none;
+            table {
+                width: 100%;
+                font-size: 10px;
+            }
+            
+            th, td {
+                padding: 4px 6px;
+            }
+            
+            /* Pour l'impression d'un seul nageur */
+            .swimmer-column:not(.selected) {
+                display: none !important;
             }
             
             .swimmer-column.selected {
-                display: table-cell;
-            }
-            
-            /* Ajuster la largeur des colonnes pour l'impression */
-            th:first-child,
-            td:first-child {
-                width: 40%;
-            }
-            
-            th:not(:first-child),
-            td:not(:first-child) {
-                width: 30%;
+                display: table-cell !important;
             }
         }
         
@@ -429,6 +448,7 @@
                 <!-- Les options seront générées dynamiquement -->
             </select>
             <button id="confirm-print-btn" class="save-btn">Confirmer l'impression</button>
+            <button id="cancel-print-btn" class="cancel-btn">Annuler</button>
         </div>
         
         <div class="table-container">
@@ -442,6 +462,7 @@
         
         <div class="footer">
             <p>ASN - MARVEL UNIVERSITY NATURAL &copy; 2025</p>
+            <p><small>Partagez ce site : <span id="share-url">Chargement...</span></small></p>
         </div>
     </div>
 
@@ -456,7 +477,7 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="group-date">Date de la compétition:</label>
+                    <label for="group-date">Date du test:</label>
                     <input type="date" id="group-date" required>
                 </div>
                 
@@ -779,15 +800,15 @@
                 // Ajouter un champ d'édition de date en mode édition
                 if (isEditMode) {
                     dateDisplay.innerHTML = `
-                        <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-                            <span>Date de la compétition:</span>
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <span>Date du test:</span>
                             <input type="date" id="group-date-input" value="${group.date}" style="padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
                             <button onclick="updateGroupDate('${groupId}')" style="padding: 5px 10px; background-color: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">Mettre à jour</button>
                         </div>
                     `;
                 } else {
                     dateDisplay.innerHTML = `
-                        <div>Date de la compétition: ${formattedDate}</div>
+                        <div>Date du test: ${formattedDate}</div>
                     `;
                 }
             } else {
@@ -833,6 +854,7 @@
                 const athleteHeader = document.createElement('th');
                 athleteHeader.innerHTML = `<strong>${athlete.name}</strong>`;
                 athleteHeader.className = 'swimmer-column';
+                athleteHeader.setAttribute('data-swimmer', athlete.name);
                 headerRow.appendChild(athleteHeader);
             }
             
@@ -871,6 +893,7 @@
                     for (const athlete of group.athletes) {
                         const cell = document.createElement('td');
                         cell.className = 'task-cell swimmer-column';
+                        cell.setAttribute('data-swimmer', athlete.name);
                         
                         // Déterminer l'état actuel
                         const isCompleted = groupResults[athlete.name] && groupResults[athlete.name][task.title] && groupResults[athlete.name][task.title][criterion.text];
@@ -902,6 +925,7 @@
             for (const athlete of group.athletes) {
                 const validationCell = document.createElement('td');
                 validationCell.className = 'validation-cell swimmer-column';
+                validationCell.setAttribute('data-swimmer', athlete.name);
                 
                 // Déterminer l'état actuel
                 const isAllCompleted = groupGlobalValidations[athlete.name] !== undefined ? 
@@ -932,9 +956,11 @@
             
             for (const athlete of group.athletes) {
                 const timeCell = document.createElement('td');
+                timeCell.className = 'swimmer-column';
+                timeCell.setAttribute('data-swimmer', athlete.name);
                 const timeInput = document.createElement('input');
                 timeInput.type = 'text';
-                timeInput.className = 'time-input' + (isEditMode ? ' editable' : ' readonly') + ' swimmer-column';
+                timeInput.className = 'time-input' + (isEditMode ? ' editable' : ' readonly');
                 timeInput.value = groupTimes[athlete.name] || '';
                 timeInput.placeholder = 'Temps...';
                 timeInput.readOnly = !isEditMode;
@@ -956,9 +982,11 @@
             
             for (const athlete of group.athletes) {
                 const observationCell = document.createElement('td');
+                observationCell.className = 'swimmer-column';
+                observationCell.setAttribute('data-swimmer', athlete.name);
                 const observationInput = document.createElement('input');
                 observationInput.type = 'text';
-                observationInput.className = 'observation-input' + (isEditMode ? ' editable' : ' readonly') + ' swimmer-column';
+                observationInput.className = 'observation-input' + (isEditMode ? ' editable' : ' readonly');
                 observationInput.value = groupObservations[athlete.name] || '';
                 observationInput.placeholder = 'Observations...';
                 observationInput.readOnly = !isEditMode;
@@ -1027,13 +1055,6 @@
         
         // Imprimer en PDF (tous les nageurs)
         function printToPDF() {
-            // Réinitialiser l'affichage pour l'impression
-            const swimmerColumns = document.querySelectorAll('.swimmer-column');
-            swimmerColumns.forEach(col => {
-                col.style.display = 'table-cell';
-                col.classList.remove('selected');
-            });
-            
             window.print();
         }
         
@@ -1077,16 +1098,14 @@
             // Masquer le sélecteur de nageur
             document.getElementById('swimmer-selector').style.display = 'none';
             
-            // Marquer la colonne du nageur sélectionné
+            // Ajouter une classe spéciale pour l'impression d'un seul nageur
+            document.body.classList.add('single-swimmer-print');
+            
+            // Marquer toutes les colonnes de nageurs
             const swimmerColumns = document.querySelectorAll('.swimmer-column');
             swimmerColumns.forEach(col => {
-                col.style.display = 'none';
                 col.classList.remove('selected');
-                
-                // Afficher seulement la colonne du nageur sélectionné
-                if (col.textContent.includes(selectedSwimmer) || 
-                    (col.querySelector('input') && col.querySelector('input').value !== undefined)) {
-                    col.style.display = 'table-cell';
+                if (col.getAttribute('data-swimmer') === selectedSwimmer) {
                     col.classList.add('selected');
                 }
             });
@@ -1094,13 +1113,18 @@
             // Lancer l'impression
             window.print();
             
-            // Réinitialiser l'affichage après l'impression
+            // Réinitialiser après l'impression
             setTimeout(() => {
+                document.body.classList.remove('single-swimmer-print');
                 swimmerColumns.forEach(col => {
-                    col.style.display = 'table-cell';
                     col.classList.remove('selected');
                 });
             }, 1000);
+        }
+        
+        // Annuler l'impression d'un seul nageur
+        function cancelSinglePrint() {
+            document.getElementById('swimmer-selector').style.display = 'none';
         }
         
         // Basculer le mode édition
@@ -1124,7 +1148,7 @@
         
         // Exporter les données en CSV
         function exportToCSV() {
-            let csvContent = "Groupe,Date,Athlète,Tâche,Critère,Statut,Validation Globale,Temps,Observations\n";
+            let csvContent = "Groupe,Date du test,Athlète,Tâche,Critère,Statut,Validation Globale,Temps,Observations\n";
             
             for (const groupId in groupsData) {
                 const group = groupsData[groupId];
@@ -1169,6 +1193,27 @@
             alert('Données exportées en CSV avec succès!');
         }
         
+        // Afficher l'URL de partage
+        function displayShareUrl() {
+            const shareUrlElement = document.getElementById('share-url');
+            const currentUrl = window.location.href;
+            shareUrlElement.textContent = currentUrl;
+            
+            // Créer un bouton de copie
+            const copyBtn = document.createElement('button');
+            copyBtn.textContent = 'Copier';
+            copyBtn.style.marginLeft = '10px';
+            copyBtn.style.padding = '2px 8px';
+            copyBtn.style.fontSize = '10px';
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(currentUrl).then(() => {
+                    alert('URL copiée dans le presse-papier!');
+                });
+            });
+            
+            shareUrlElement.parentNode.appendChild(copyBtn);
+        }
+        
         // Gérer l'ajout de groupes
         function setupGroupManagement() {
             const addGroupBtn = document.getElementById('add-group-btn');
@@ -1179,6 +1224,7 @@
             const addGroupForm = document.getElementById('add-group-form');
             const printSingleBtn = document.getElementById('print-single-btn');
             const confirmPrintBtn = document.getElementById('confirm-print-btn');
+            const cancelPrintBtn = document.getElementById('cancel-print-btn');
             
             // Ouvrir le modal
             addGroupBtn.addEventListener('click', () => {
@@ -1223,6 +1269,9 @@
             
             // Confirmer l'impression d'un seul nageur
             confirmPrintBtn.addEventListener('click', printSingleSwimmer);
+            
+            // Annuler l'impression d'un seul nageur
+            cancelPrintBtn.addEventListener('click', cancelSinglePrint);
             
             // Soumettre le formulaire
             addGroupForm.addEventListener('submit', (e) => {
@@ -1339,6 +1388,9 @@
             
             // Configurer la gestion des groupes
             setupGroupManagement();
+            
+            // Afficher l'URL de partage
+            displayShareUrl();
             
             // Générer le tableau pour le premier groupe
             const firstGroup = groupSelect.value;
