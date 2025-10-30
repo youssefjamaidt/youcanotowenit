@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiche Technique Groupe Compétition</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            flex-wrap: wrap;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background-color: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        
+        .title-container h1 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .title-container p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 8px 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 12px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .save-btn {
+            background-color: #27ae60;
+        }
+        
+        .save-btn:hover {
+            background-color: #219653;
+        }
+        
+        .edit-btn {
+            background-color: #f39c12;
+        }
+        
+        .edit-btn:hover {
+            background-color: #e67e22;
+        }
+        
+        .export-btn {
+            background-color: #9b59b6;
+        }
+        
+        .export-btn:hover {
+            background-color: #8e44ad;
+        }
+        
+        .group-selector {
+            margin-bottom: 15px;
+        }
+        
+        select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 200px;
+            font-size: 14px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            min-width: 800px;
+        }
+        
+        th, td {
+            padding: 6px 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+            min-width: 100px;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            position: sticky;
+            top: 0;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .task-cell {
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .task-cell.yes {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .task-cell.no {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .validation-cell {
+            font-weight: bold;
+        }
+        
+        .validation-cell.valid {
+            color: #28a745;
+        }
+        
+        .validation-cell.invalid {
+            color: #dc3545;
+        }
+        
+        .task-title {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+        
+        .task-criteria {
+            padding-left: 20px !important;
+        }
+        
+        .section-title {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .sub-section {
+            background-color: #34495e;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .form-group {
+            margin-bottom: 12px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .swimmer-input {
+            margin-bottom: 8px;
+        }
+        
+        .add-swimmer-btn {
+            background-color: #27ae60;
+            margin-bottom: 15px;
+        }
+        
+        .add-swimmer-btn:hover {
+            background-color: #219653;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .cancel-btn {
+            background-color: #95a5a6;
+        }
+        
+        .cancel-btn:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .time-input, .observation-input, .data-input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+        
+        .editable {
+            background-color: #fff3cd;
+        }
+        
+        .readonly {
+            background-color: #f8f9fa;
+        }
+        
+        @media print {
+            .no-print {
+                display: none;
+            }
+            
+            body {
+                background-color: white;
+            }
+            
+            .table-container {
+                box-shadow: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .group-selector {
+                width: 100%;
+            }
+            
+            select {
+                max-width: 100%;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo">ASN</div>
+                <div class="title-container">
+                    <h1>Fiche Technique Groupe Compétition</h1>
+                    <p>ACHBAL SPORTIF NATATION</p>
+                </div>
+            </div>
+        </header>
+        
+        <div class="controls no-print">
+            <div class="group-selector">
+                <label for="group-select">Sélectionner un groupe:</label>
+                <select id="group-select">
+                    <!-- Les options seront générées dynamiquement -->
+                </select>
+            </div>
+            <button id="add-group-btn">Ajouter un groupe</button>
+            <button id="save-btn" class="save-btn">Enregistrer</button>
+            <button id="edit-btn" class="edit-btn">Mode Édition</button>
+            <button id="export-btn" class="export-btn">Exporter CSV</button>
+            <button id="print-btn">Imprimer PDF</button>
+            <button id="reset-btn">Réinitialiser</button>
+        </div>
+        
+        <div class="table-container">
+            <table id="results-table">
+                <!-- Le contenu du tableau sera généré dynamiquement -->
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>ASN - DIRECTEUR TECHNIQUE: YOUSSEF AMRI JAMAI &copy; 2025</p>
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter un groupe -->
+    <div id="add-group-modal" class="modal">
+        <div class="modal-content">
+            <h2>Ajouter un nouveau groupe</h2>
+            <form id="add-group-form">
+                <div class="form-group">
+                    <label for="group-name">Nom du groupe:</label>
+                    <input type="text" id="group-name" required>
+                </div>
+                
+                <h3>Nageurs (minimum 1, maximum 4)</h3>
+                <div id="swimmers-container">
+                    <div class="form-group swimmer-input">
+                        <label>Nageur 1:</label>
+                        <input type="text" class="swimmer-name" required>
+                    </div>
+                </div>
+                
+                <button type="button" id="add-swimmer-btn" class="add-swimmer-btn">Ajouter un nageur</button>
+                
+                <div class="modal-buttons">
+                    <button type="button" id="cancel-btn" class="cancel-btn">Annuler</button>
+                    <button type="submit">Créer le groupe</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Données des groupes
+        const groupsData = {
+            1: {
+                title: "Groupe 1",
+                athletes: [
+                    { name: "BENAYADE TAMIM" },
+                    { name: "BENCHARKI CHAHD" },
+                    { name: "CHORFI HIBA" },
+                    { name: "EL ABED RANIA" }
+                ]
+            },
+            2: {
+                title: "Groupe 2",
+                athletes: [
+                    { name: "EL HAJMI ROMAISSA" },
+                    { name: "FORHRANI CHAHD" },
+                    { name: "KHERRAF OTHMANE" },
+                    { name: "JAWHAR MALAK" }
+                ]
+            },
+            3: {
+                title: "Groupe 3",
+                athletes: [
+                    { name: "LAMRINI RAYANE" },
+                    { name: "LEKNOUCH MED RIYAD" },
+                    { name: "LEKNOUCH SAMI" },
+                    { name: "MADIH NIZAR" }
+                ]
+            },
+            4: {
+                title: "Groupe 4",
+                athletes: [
+                    { name: "MAMI EL MEHDI" },
+                    { name: "MAMI RITAJ" },
+                    { name: "MEFHOUM WARDA" },
+                    { name: "MOKBIL NIAMA" }
+                ]
+            },
+            5: {
+                title: "Groupe 5",
+                athletes: [
+                    { name: "MOKBIL MOHAMED" },
+                    { name: "NASSOUH ADAM" },
+                    { name: "NASSOUH IMRANE" },
+                    { name: "OUTACHIKHT BAYANE" }
+                ]
+            },
+            6: {
+                title: "Groupe 6",
+                athletes: [
+                    { name: "QORAICHE MED ALI" },
+                    { name: "QORAICHE YOUSSRA" },
+                    { name: "ROSSAKI LINA" },
+                    { name: "SAJAI DOUNIA" }
+                ]
+            },
+            7: {
+                title: "Groupe 7",
+                athletes: [
+                    { name: "SEKKOUR MARWA" },
+                    { name: "SIDRI ISLAM" },
+                    { name: "SIDRI KHADIJA" },
+                    { name: "SIDRI IMRANE" }
+                ]
+            }
+        };
+
+        // Tâches de compétition avec structure exacte comme Excel
+        const tasks = [
+            {
+                title: "TÂCHE 1 : Présence chambre d'appel",
+                criteria: [
+                    { text: "Présent en chambre d'appel", indent: 0 }
+                ]
+            },
+            {
+                title: "TÂCHE 2 : Position ligne d'eau",
+                criteria: [
+                    { text: "Se dirige vers sa ligne d'eau sans erreur", indent: 0 }
+                ]
+            },
+            {
+                title: "TÂCHE 3 : préparation au départ",
+                criteria: [
+                    { text: "Attend les ordres du starter", indent: 0 }
+                ]
+            },
+            {
+                title: "TÂCHE 4 : Position de départ",
+                criteria: [
+                    { text: "Ne provoque pas de faux départ", indent: 0 }
+                ]
+            },
+            {
+                title: "TÂCHE 5 : Départ compétition",
+                criteria: [
+                    { text: "Ne provoque pas de faux départ", indent: 0 },
+                    { text: "Coulée ≤ 15m (passage tête)", indent: 0 }
+                ]
+            },
+            {
+                title: "TÂCHE 6 : 25m papillon",
+                criteria: [
+                    { text: "25m nagés en papillon", indent: 0 },
+                    { text: "Bras simultanés tout le trajet", indent: 0 },
+                    { text: "Bras continus", indent: 1 },
+                    { text: "Retour aérien simultané", indent: 0 },
+                    { text: "Jambes simultanées", indent: 0 }
+                ]
+            },
+            {
+                title: "TÂCHE 7 : Virage papillon→dos",
+                criteria: [
+                    { text: "Touché mur 2 mains simultanées (ventral)", indent: 0 },
+                    { text: "Repart en position dorsale", indent: 1 },
+                    { text: "Coulée ≤ 15m", indent: 0 }
+                ]
+            },
+            {
+                title: "TÂCHE 8 : 25m dos crawlé",
+                criteria: [
+                    { text: "25m nagés en dos", indent: 0 },
+                    { text: "Position dorsale", indent: 0 },
+                    { text: "Roulis < 90°", indent: 0 },
+                    { text: "Bras alternés", indent: 0 },
+                    { text: "Bras continus", indent: 1 },
+                    { text: "Retour aérien", indent: 0 },
+                    { text: "Jambes alternatifs", indent: 1 }
+                ]
+            },
+            {
+                title: "TÂCHE 9 : Virage dos→brasse",
+                criteria: [
+                    { text: "Touché mur sur le dos", indent: 0 },
+                    { text: "Repart en position ventrale", indent: 1 },
+                    { text: "Effectue coulée + action bras/jambes", indent: 1 },
+                    { text: "Tête surface avant la deuxieme traction", indent: 1 }
+                ]
+            },
+            {
+                title: "TÂCHE 10 : 25m brasse",
+                criteria: [
+                    { text: "25m nagés en brasse", indent: 0 },
+                    { text: "Bras simultanés", indent: 0 },
+                    { text: "Bras ne dépassent pas les hanches", indent: 0 },
+                    { text: "Coudes dans l'eau", indent: 1 },
+                    { text: "Tête coupe surface chaque cycle", indent: 1 },
+                    { text: "Jambes simultanées", indent: 1 },
+                    { text: "Jambes même plan horizontal", indent: 1 },
+                    { text: "Pointes de pieds vers l'extérieur", indent: 1 }
+                ]
+            },
+            {
+                title: "TÂCHE 11 : Virage brasse→crawl",
+                criteria: [
+                    { text: "Touché mur 2 mains simultanées (ventral)", indent: 0 },
+                    { text: "Coulée ≤ 15m", indent: 1 }
+                ]
+            },
+            {
+                title: "TÂCHE 12 : 25m crawl",
+                criteria: [
+                    { text: "25m nagés en crawl", indent: 1 },
+                    { text: "Tête dans l'eau", indent: 1 },
+                    { text: "Position ventrale", indent: 0 },
+                    { text: "Bras alternés", indent: 0 },
+                    { text: "Retour aérien", indent: 0 }
+                ]
+            },
+            {
+                title: "TÂCHE 13 : Arrivée et chrono",
+                criteria: [
+                    { text: "Touche le mur franchement", indent: 0 },
+                    { text: "Demande son temps au chronométreur", indent: 0 },
+                    { text: "Attend les autres avant de sortir", indent: 0 }
+                ]
+            }
+        ];
+
+        // Stockage des résultats
+        let results = {};
+        let times = {};
+        let observations = {};
+        let isEditMode = false;
+        
+        // Initialiser les résultats
+        function initializeResults() {
+            results = {};
+            times = {};
+            observations = {};
+            
+            for (const groupId in groupsData) {
+                results[groupId] = {};
+                times[groupId] = {};
+                observations[groupId] = {};
+                
+                for (const athlete of groupsData[groupId].athletes) {
+                    results[groupId][athlete.name] = {};
+                    times[groupId][athlete.name] = "";
+                    observations[groupId][athlete.name] = "";
+                    
+                    for (const task of tasks) {
+                        results[groupId][athlete.name][task.title] = {};
+                        
+                        for (const criterion of task.criteria) {
+                            results[groupId][athlete.name][task.title][criterion.text] = false;
+                        }
+                    }
+                }
+            }
+            
+            // Sauvegarder dans le localStorage
+            saveAllData();
+        }
+        
+        // Charger les résultats depuis le localStorage
+        function loadResults() {
+            const savedResults = localStorage.getItem('competitionResults');
+            const savedTimes = localStorage.getItem('competitionTimes');
+            const savedObservations = localStorage.getItem('competitionObservations');
+            const savedGroups = localStorage.getItem('competitionGroups');
+            
+            if (savedGroups) {
+                Object.assign(groupsData, JSON.parse(savedGroups));
+            }
+            
+            if (savedResults) {
+                results = JSON.parse(savedResults);
+            } else {
+                initializeResults();
+            }
+            
+            if (savedTimes) {
+                times = JSON.parse(savedTimes);
+            }
+            
+            if (savedObservations) {
+                observations = JSON.parse(savedObservations);
+            }
+        }
+        
+        // Sauvegarder toutes les données dans le localStorage
+        function saveAllData() {
+            localStorage.setItem('competitionResults', JSON.stringify(results));
+            localStorage.setItem('competitionTimes', JSON.stringify(times));
+            localStorage.setItem('competitionObservations', JSON.stringify(observations));
+            localStorage.setItem('competitionGroups', JSON.stringify(groupsData));
+            alert('Données enregistrées avec succès!');
+        }
+        
+        // Mettre à jour le sélecteur de groupes
+        function updateGroupSelector() {
+            const groupSelect = document.getElementById('group-select');
+            groupSelect.innerHTML = '';
+            
+            for (const groupId in groupsData) {
+                const option = document.createElement('option');
+                option.value = groupId;
+                option.textContent = groupsData[groupId].title;
+                groupSelect.appendChild(option);
+            }
+        }
+        
+        // Générer le tableau pour un groupe spécifique
+        function generateTable(groupId) {
+            const table = document.getElementById('results-table');
+            table.innerHTML = '';
+            
+            const group = groupsData[groupId];
+            const groupResults = results[groupId];
+            const groupTimes = times[groupId] || {};
+            const groupObservations = observations[groupId] || {};
+            
+            // Créer l'en-tête du tableau
+            const headerRow = document.createElement('tr');
+            
+            // Colonne pour les tâches
+            const taskHeader = document.createElement('th');
+            taskHeader.textContent = 'TÂCHES ET CRITÈRES DE RÉUSSITE';
+            taskHeader.colSpan = 2;
+            headerRow.appendChild(taskHeader);
+            
+            // Colonnes pour les athlètes
+            for (const athlete of group.athletes) {
+                const athleteHeader = document.createElement('th');
+                athleteHeader.innerHTML = `<strong>${athlete.name}</strong>`;
+                headerRow.appendChild(athleteHeader);
+            }
+            
+            table.appendChild(headerRow);
+            
+            // Ajouter les tâches et critères
+            for (const task of tasks) {
+                // Ligne de titre de tâche
+                const taskTitleRow = document.createElement('tr');
+                const taskTitleCell = document.createElement('td');
+                taskTitleCell.textContent = task.title;
+                taskTitleCell.colSpan = 2 + group.athletes.length;
+                taskTitleCell.className = 'task-title';
+                taskTitleRow.appendChild(taskTitleCell);
+                table.appendChild(taskTitleRow);
+                
+                // Lignes de critères
+                for (const criterion of task.criteria) {
+                    const criterionRow = document.createElement('tr');
+                    
+                    // Cellule vide pour l'indentation
+                    const emptyCell = document.createElement('td');
+                    emptyCell.style.width = '20px';
+                    criterionRow.appendChild(emptyCell);
+                    
+                    // Cellule du critère
+                    const criterionCell = document.createElement('td');
+                    criterionCell.textContent = criterion.text;
+                    criterionCell.className = 'task-criteria';
+                    if (criterion.indent > 0) {
+                        criterionCell.style.paddingLeft = (20 + criterion.indent * 15) + 'px';
+                    }
+                    criterionRow.appendChild(criterionCell);
+                    
+                    // Cellules pour chaque athlète
+                    for (const athlete of group.athletes) {
+                        const cell = document.createElement('td');
+                        cell.className = 'task-cell';
+                        
+                        // Déterminer l'état actuel
+                        const isCompleted = groupResults[athlete.name] && groupResults[athlete.name][task.title] && groupResults[athlete.name][task.title][criterion.text];
+                        cell.textContent = isCompleted ? 'Oui' : 'Non';
+                        cell.classList.add(isCompleted ? 'yes' : 'no');
+                        
+                        // Ajouter l'événement de clic
+                        cell.addEventListener('click', () => {
+                            if (isEditMode) {
+                                toggleTaskCompletion(groupId, athlete.name, task.title, criterion.text);
+                            }
+                        });
+                        
+                        criterionRow.appendChild(cell);
+                    }
+                    
+                    table.appendChild(criterionRow);
+                }
+            }
+            
+            // Ligne de validation globale
+            const validationRow = document.createElement('tr');
+            const validationTitleCell = document.createElement('td');
+            validationTitleCell.innerHTML = '<strong>VALIDATION GLOBALE</strong>';
+            validationTitleCell.colSpan = 2;
+            validationTitleCell.style.fontWeight = 'bold';
+            validationRow.appendChild(validationTitleCell);
+            
+            for (const athlete of group.athletes) {
+                const validationCell = document.createElement('td');
+                validationCell.className = 'validation-cell';
+                
+                // Vérifier si toutes les tâches sont complétées
+                const isAllCompleted = isAthleteAllTasksCompleted(groupId, athlete.name);
+                validationCell.textContent = isAllCompleted ? 'RÉUSSI (toutes tâches validées)' : 'NON RÉUSSI';
+                validationCell.classList.add(isAllCompleted ? 'valid' : 'invalid');
+                
+                validationRow.appendChild(validationCell);
+            }
+            
+            table.appendChild(validationRow);
+            
+            // Ligne pour les temps
+            const timeRow = document.createElement('tr');
+            const timeTitleCell = document.createElement('td');
+            timeTitleCell.innerHTML = '<strong>• TEMPS</strong>';
+            timeTitleCell.colSpan = 2;
+            timeRow.appendChild(timeTitleCell);
+            
+            for (const athlete of group.athletes) {
+                const timeCell = document.createElement('td');
+                const timeInput = document.createElement('input');
+                timeInput.type = 'text';
+                timeInput.className = 'time-input' + (isEditMode ? ' editable' : ' readonly');
+                timeInput.value = groupTimes[athlete.name] || '';
+                timeInput.placeholder = 'Temps...';
+                timeInput.readOnly = !isEditMode;
+                timeInput.addEventListener('change', () => {
+                    saveTime(groupId, athlete.name, timeInput.value);
+                });
+                timeCell.appendChild(timeInput);
+                timeRow.appendChild(timeCell);
+            }
+            
+            table.appendChild(timeRow);
+            
+            // Ligne pour les observations
+            const observationRow = document.createElement('tr');
+            const observationTitleCell = document.createElement('td');
+            observationTitleCell.innerHTML = '<strong>• OBSERVATIONS</strong>';
+            observationTitleCell.colSpan = 2;
+            observationRow.appendChild(observationTitleCell);
+            
+            for (const athlete of group.athletes) {
+                const observationCell = document.createElement('td');
+                const observationInput = document.createElement('input');
+                observationInput.type = 'text';
+                observationInput.className = 'observation-input' + (isEditMode ? ' editable' : ' readonly');
+                observationInput.value = groupObservations[athlete.name] || '';
+                observationInput.placeholder = 'Observations...';
+                observationInput.readOnly = !isEditMode;
+                observationInput.addEventListener('change', () => {
+                    saveObservation(groupId, athlete.name, observationInput.value);
+                });
+                observationCell.appendChild(observationInput);
+                observationRow.appendChild(observationCell);
+            }
+            
+            table.appendChild(observationRow);
+        }
+        
+        // Basculer l'état d'une tâche
+        function toggleTaskCompletion(groupId, athleteName, taskTitle, criterion) {
+            if (!results[groupId]) results[groupId] = {};
+            if (!results[groupId][athleteName]) results[groupId][athleteName] = {};
+            if (!results[groupId][athleteName][taskTitle]) results[groupId][athleteName][taskTitle] = {};
+            
+            results[groupId][athleteName][taskTitle][criterion] = !results[groupId][athleteName][taskTitle][criterion];
+            
+            // Regénérer le tableau
+            const currentGroup = document.getElementById('group-select').value;
+            generateTable(currentGroup);
+        }
+        
+        // Sauvegarder le temps d'un athlète
+        function saveTime(groupId, athleteName, time) {
+            if (!times[groupId]) times[groupId] = {};
+            times[groupId][athleteName] = time;
+        }
+        
+        // Sauvegarder l'observation d'un athlète
+        function saveObservation(groupId, athleteName, observation) {
+            if (!observations[groupId]) observations[groupId] = {};
+            observations[groupId][athleteName] = observation;
+        }
+        
+        // Vérifier si un athlète a complété toutes les tâches
+        function isAthleteAllTasksCompleted(groupId, athleteName) {
+            const athleteResults = results[groupId] && results[groupId][athleteName];
+            
+            if (!athleteResults) return false;
+            
+            for (const taskTitle in athleteResults) {
+                for (const criterion in athleteResults[taskTitle]) {
+                    if (!athleteResults[taskTitle][criterion]) {
+                        return false;
+                    }
+                }
+            }
+            
+            return true;
+        }
+        
+        // Imprimer en PDF
+        function printToPDF() {
+            window.print();
+        }
+        
+        // Basculer le mode édition
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const editBtn = document.getElementById('edit-btn');
+            
+            if (isEditMode) {
+                editBtn.textContent = 'Mode Visualisation';
+                editBtn.style.backgroundColor = '#95a5a6';
+            } else {
+                editBtn.textContent = 'Mode Édition';
+                editBtn.style.backgroundColor = '#f39c12';
+            }
+            
+            // Regénérer le tableau avec le nouveau mode
+            const currentGroup = document.getElementById('group-select').value;
+            generateTable(currentGroup);
+        }
+        
+        // Exporter les données en CSV
+        function exportToCSV() {
+            let csvContent = "Groupe,Athlète,Tâche,Critère,Statut,Temps,Observations\n";
+            
+            for (const groupId in groupsData) {
+                const group = groupsData[groupId];
+                
+                for (const athlete of group.athletes) {
+                    const athleteName = athlete.name;
+                    const athleteTimes = times[groupId] || {};
+                    const athleteObservations = observations[groupId] || {};
+                    const athleteResults = results[groupId] || {};
+                    
+                    for (const task of tasks) {
+                        for (const criterion of task.criteria) {
+                            const status = (athleteResults[athleteName] && 
+                                          athleteResults[athleteName][task.title] && 
+                                          athleteResults[athleteName][task.title][criterion.text]) ? "Oui" : "Non";
+                            
+                            const time = athleteTimes[athleteName] || "";
+                            const observation = athleteObservations[athleteName] || "";
+                            
+                            csvContent += `"${group.title}","${athleteName}","${task.title}","${criterion.text}","${status}","${time}","${observation}"\n`;
+                        }
+                    }
+                }
+            }
+            
+            // Créer un blob et télécharger le fichier
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", "competition_data.csv");
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert('Données exportées en CSV avec succès!');
+        }
+        
+        // Gérer l'ajout de groupes
+        function setupGroupManagement() {
+            const addGroupBtn = document.getElementById('add-group-btn');
+            const modal = document.getElementById('add-group-modal');
+            const cancelBtn = document.getElementById('cancel-btn');
+            const addSwimmerBtn = document.getElementById('add-swimmer-btn');
+            const swimmersContainer = document.getElementById('swimmers-container');
+            const addGroupForm = document.getElementById('add-group-form');
+            
+            // Ouvrir le modal
+            addGroupBtn.addEventListener('click', () => {
+                modal.style.display = 'flex';
+            });
+            
+            // Fermer le modal
+            cancelBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+                // Réinitialiser le formulaire
+                addGroupForm.reset();
+                // Réinitialiser les champs nageurs
+                swimmersContainer.innerHTML = `
+                    <div class="form-group swimmer-input">
+                        <label>Nageur 1:</label>
+                        <input type="text" class="swimmer-name" required>
+                    </div>
+                `;
+            });
+            
+            // Ajouter un champ nageur
+            addSwimmerBtn.addEventListener('click', () => {
+                const swimmerCount = swimmersContainer.querySelectorAll('.swimmer-input').length;
+                
+                if (swimmerCount < 4) {
+                    const newSwimmerInput = document.createElement('div');
+                    newSwimmerInput.className = 'form-group swimmer-input';
+                    newSwimmerInput.innerHTML = `
+                        <label>Nageur ${swimmerCount + 1}:</label>
+                        <input type="text" class="swimmer-name" required>
+                    `;
+                    swimmersContainer.appendChild(newSwimmerInput);
+                } else {
+                    alert('Maximum 4 nageurs par groupe');
+                }
+            });
+            
+            // Soumettre le formulaire
+            addGroupForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const groupName = document.getElementById('group-name').value;
+                const swimmerInputs = swimmersContainer.querySelectorAll('.swimmer-name');
+                const swimmers = [];
+                
+                // Récupérer les noms des nageurs
+                swimmerInputs.forEach(input => {
+                    if (input.value.trim() !== '') {
+                        swimmers.push({ name: input.value.trim() });
+                    }
+                });
+                
+                // Vérifier qu'il y a au moins un nageur
+                if (swimmers.length === 0) {
+                    alert('Veuillez ajouter au moins un nageur');
+                    return;
+                }
+                
+                // Créer un nouvel ID de groupe
+                const groupIds = Object.keys(groupsData).map(id => parseInt(id));
+                const newGroupId = groupIds.length > 0 ? Math.max(...groupIds) + 1 : 1;
+                
+                // Ajouter le nouveau groupe
+                groupsData[newGroupId] = {
+                    title: groupName,
+                    athletes: swimmers
+                };
+                
+                // Initialiser les résultats pour ce groupe
+                results[newGroupId] = {};
+                times[newGroupId] = {};
+                observations[newGroupId] = {};
+                
+                for (const athlete of swimmers) {
+                    results[newGroupId][athlete.name] = {};
+                    times[newGroupId][athlete.name] = "";
+                    observations[newGroupId][athlete.name] = "";
+                    
+                    for (const task of tasks) {
+                        results[newGroupId][athlete.name][task.title] = {};
+                        
+                        for (const criterion of task.criteria) {
+                            results[newGroupId][athlete.name][task.title][criterion.text] = false;
+                        }
+                    }
+                }
+                
+                // Sauvegarder les données
+                saveAllData();
+                
+                // Mettre à jour l'interface
+                updateGroupSelector();
+                document.getElementById('group-select').value = newGroupId;
+                generateTable(newGroupId);
+                
+                // Fermer le modal et réinitialiser le formulaire
+                modal.style.display = 'none';
+                addGroupForm.reset();
+                swimmersContainer.innerHTML = `
+                    <div class="form-group swimmer-input">
+                        <label>Nageur 1:</label>
+                        <input type="text" class="swimmer-name" required>
+                    </div>
+                `;
+            });
+        }
+        
+        // Initialiser l'application
+        document.addEventListener('DOMContentLoaded', () => {
+            // Charger les résultats
+            loadResults();
+            
+            // Configurer le sélecteur de groupe
+            updateGroupSelector();
+            
+            const groupSelect = document.getElementById('group-select');
+            groupSelect.addEventListener('change', () => {
+                generateTable(groupSelect.value);
+            });
+            
+            // Configurer les boutons
+            const printBtn = document.getElementById('print-btn');
+            printBtn.addEventListener('click', printToPDF);
+            
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.addEventListener('click', saveAllData);
+            
+            const editBtn = document.getElementById('edit-btn');
+            editBtn.addEventListener('click', toggleEditMode);
+            
+            const exportBtn = document.getElementById('export-btn');
+            exportBtn.addEventListener('click', exportToCSV);
+            
+            const resetBtn = document.getElementById('reset-btn');
+            resetBtn.addEventListener('click', () => {
+                if (confirm('Êtes-vous sûr de vouloir réinitialiser tous les résultats ?')) {
+                    initializeResults();
+                    generateTable(groupSelect.value);
+                }
+            });
+            
+            // Configurer la gestion des groupes
+            setupGroupManagement();
+            
+            // Générer le tableau pour le premier groupe
+            generateTable(groupSelect.value);
+        });
+    </script>
+</body>
+</html>
