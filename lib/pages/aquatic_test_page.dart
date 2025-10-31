@@ -178,4 +178,21 @@ class _AquaticTestPageState extends State<AquaticTestPage> {
         strokeRate: _strokeRate,
         observations: _observations,
         reactionTime: _reactionTime,
-       
+        turnEfficiency: _turnEfficiency,
+        underwaterDistance: _underwaterDistance,
+      );
+
+      _syncService.syncAquaticTest(test);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Test aquatique sauvegardé')),
+      );
+    }
+  }
+
+  void _syncTest() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Test synchronisé')),
+    );
+  }
+}
