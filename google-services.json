@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1061332841873",
+    "project_id": "youcanotowenit",
+    "storage_bucket": "youcanotowenit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1061332841873:android:be6df8466c32be2ad9d630",
+        "android_client_info": {
+          "package_name": "com.youcan.youcanotowenit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBt_Sn99oaUft-uvqkPA0C3gJCaXP6ceFA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
